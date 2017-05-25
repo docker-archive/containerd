@@ -10,7 +10,7 @@ func TestContainerList(t *testing.T) {
 		t.Skip()
 		return
 	}
-	client, err := New(defaultAddress)
+	client, err := New(address)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,7 +31,7 @@ func TestNewContainer(t *testing.T) {
 		t.Skip()
 		return
 	}
-	client, err := New(defaultAddress)
+	client, err := New(address)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -2,17 +2,23 @@ package containerd
 
 import (
 	"context"
+	"flag"
 	"testing"
 )
 
-const defaultAddress = "/run/containerd/containerd.sock"
+func init() {
+	flag.StringVar(&address, "address", "/run/containerd/containerd.sock", "The address to the containerd socket for use in the tests")
+	flag.Parse()
+}
+
+var address string
 
 func TestNewClient(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
 		return
 	}
-	client, err := New(defaultAddress)
+	client, err := New(address)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -29,7 +35,7 @@ func TestImagePull(t *testing.T) {
 		t.Skip()
 		return
 	}
-	client, err := New(defaultAddress)
+	client, err := New(address)
 	if err != nil {
 		t.Fatal(err)
 	}
