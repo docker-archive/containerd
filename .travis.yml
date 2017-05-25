@@ -7,6 +7,11 @@ go:
   - 1.8.x
   - tip
 
+# setup travis so that we can run containers for integration tests
+sudo: required
+services:
+  - docker
+
 go_import_path: github.com/containerd/containerd
 
 addons:
@@ -33,6 +38,7 @@ script:
   - make fmt
   - make vet
   - make binaries
+  - make install
   - if [ "$GOOS" = "linux" ]; then make coverage ; fi
   - if [ "$GOOS" = "linux" ]; then sudo PATH=$PATH GOPATH=$GOPATH make root-coverage ; fi
 
