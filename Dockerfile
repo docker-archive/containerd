@@ -58,11 +58,12 @@ RUN set -x \
 	) \
 	&& rm -rf "$SECCOMP_PATH"
 
-# Install runc
-ENV RUNC_COMMIT 992a5be178a62e026f4069f443c6164912adbf09
+# Install runc from the 17.06 branch in https://github.com/docker/runc
+# when updating, also update hack/vendor.sh and .travis.yml accordingly
+ENV RUNC_COMMIT 519d2ac975245b241773455f43db39bf6b8f40c8
 RUN set -x \
 	&& export GOPATH="$(mktemp -d)" \
-    && git clone git://github.com/opencontainers/runc.git "$GOPATH/src/github.com/opencontainers/runc" \
+    && git clone git://github.com/docker/runc.git "$GOPATH/src/github.com/opencontainers/runc" \
 	&& cd "$GOPATH/src/github.com/opencontainers/runc" \
 	&& git checkout -q "$RUNC_COMMIT" \
 	&& make BUILDTAGS="seccomp apparmor selinux" && make install

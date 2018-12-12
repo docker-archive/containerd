@@ -17,7 +17,9 @@ addons:
       - curl
 
 env:
-  - SECCOMP_VERSION=2.3.1 RUNC_COMMIT=992a5be178a62e026f4069f443c6164912adbf09
+  # Runc is built from the 17.06 branch in https://github.com/docker/runc
+  # when updating, also update the Dockerfile and hack/vendor.sh accordingly
+  - SECCOMP_VERSION=2.3.1 RUNC_COMMIT=519d2ac975245b241773455f43db39bf6b8f40c8
 
 
 install:
