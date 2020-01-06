@@ -4,8 +4,7 @@ sudo: required
 language: go
 
 go:
-  - 1.8.x
-  - tip
+  - 1.10.x
 
 go_import_path: github.com/containerd/containerd
 
