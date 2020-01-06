@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -228,6 +229,7 @@ type container struct {
 	runtime     string
 	runtimeArgs []string
 	shim        string
+	pmu         sync.Mutex
 	processes   map[string]*process
 	labels      []string
 	oomFds      []int
@@ -278,19 +280,25 @@ func (c *container) Delete() error {
 
 func (c *container) Processes() ([]Process, error) {
 	out := []Process{}
+	c.pmu.Lock()
 	for _, p := range c.processes {
 		out = append(out, p)
 	}
+	c.pmu.Unlock()
 	return out, nil
 }
 
 func (c *container) RemoveProcess(pid string) error {
+	c.pmu.Lock()
 	delete(c.processes, pid)
+	c.pmu.Unlock()
 	return os.RemoveAll(filepath.Join(c.root, c.id, pid))
 }
 
 func (c *container) State() State {
+	c.pmu.Lock()
 	proc := c.processes[InitProcessID]
+	c.pmu.Unlock()
 	if proc == nil {
 		return Stopped
 	}
@@ -532,7 +540,9 @@ func (c *container) createCmd(ctx context.Context, pid string, cmd *exec.Cmd, p 
 			ch <- err
 			return
 		}
+		c.pmu.Lock()
 		c.processes[pid] = p
+		c.pmu.Unlock()
 		ch <- nil
 	}()
 	select {
