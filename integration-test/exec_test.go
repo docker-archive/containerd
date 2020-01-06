@@ -4,6 +4,7 @@ package main
 
 import (
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -58,7 +59,7 @@ func (cs *ContainerdSuite) TestBusyboxTopExecEcho(t *check.C) {
 		t.Assert(*e, checker.Equals, evt)
 	}
 
-	t.Assert(echop.io.stdoutBuffer.String(), checker.Equals, "Ay Caramba!")
+	t.Assert(strings.TrimRight(echop.io.stdoutBuffer.String(), string('\x00')), checker.Equals, "Ay Caramba!")
 }
 
 func (cs *ContainerdSuite) TestBusyboxTopExecTop(t *check.C) {
