@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -439,7 +440,7 @@ func (cs *ContainerdSuite) TestRestart(t *check.C) {
 
 		t.Assert(*e, checker.Equals, evt)
 	}
-	t.Assert(echop.io.stdoutBuffer.String(), checker.Equals, "Success!")
+	t.Assert(strings.TrimRight(echop.io.stdoutBuffer.String(), string('\x00')), checker.Equals, "Success!")
 
 	// Now kill daemon (SIGKILL)
 	cs.StopDaemon(true)
