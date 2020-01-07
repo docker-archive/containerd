@@ -90,7 +90,7 @@ shell: dbuild
 	$(DOCKER_RUN) bash
 
 test: validate install bundles-rootfs
-	go test -bench=. -v $(shell go list ./... | grep -v /vendor | grep -v /integration-test ) -runtime=$(RUNTIME)
+	go test -bench=. -v $(shell go list ./... | grep -v -e /vendor -e /integration-test -e /pprof) -runtime=$(RUNTIME)
 ifneq ($(wildcard /.dockerenv), )
 	cd integration-test ; \
 go test -check.v -check.timeout=$(TEST_TIMEOUT) $(TESTFLAGS) timeout=$(TEST_SUITE_TIMEOUT) github.com/containerd/containerd/integration-test
@@ -98,10 +98,10 @@ endif
 
 integration-test:
 	cd integration-test ; \
-go test -check.v -check.timeout=$(TEST_TIMEOUT) $(TESTFLAGS) timeout=$(TEST_SUITE_TIMEOUT) github.com/containerd/containerd/integration-test
+go test -parallel 1 -check.v -check.timeout=$(TEST_TIMEOUT) $(TESTFLAGS) timeout=$(TEST_SUITE_TIMEOUT) github.com/containerd/containerd/integration-test
 
 bench: shim validate install bundles-rootfs
-	go test -bench=. -v $(shell go list ./... | grep -v /vendor | grep -v /integration-test) -runtime=$(RUNTIME)
+	go test -bench=. -v $(shell go list ./... | grep -v -e /vendor -e /integration-test -e /pprof) -runtime=$(RUNTIME)
 
 validate: fmt lint
 
